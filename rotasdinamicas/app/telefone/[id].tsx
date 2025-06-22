@@ -38,7 +38,25 @@ export default function TelefoneDetalhe() {
     async function buscarCelular() {
       try {
         const response = await axios.get(`https://api.restful-api.dev/objects/${id}`);
-        setTelefone(response.data);
+        const dados = response.data;
+        const data = dados.data || {};
+        
+        /*Essa desgraça teve que fazer const dadosTelefone dessa forma
+         pq a api foi feita toda errada, caso classico de api mal padronizada*/
+
+        const dadosTelefone = {
+          ...dados,
+          data: {
+            color: data.color || data.Color || 'Não informado',
+            capacity: data.capacity || data.Capacity || 'Não informado',
+            price: data.price || data.Price || 'Não informado',
+            generation: data.generation || data.Generation || 'Não informado',
+            year: data.year || 'Não informado',
+            Description: data.Description || 'Não informado'
+          }
+        }
+        setTelefone(dadosTelefone);
+
       } catch (error) {
         console.error("Erro ao buscar o celular: ", error);
       } finally {
@@ -56,11 +74,12 @@ export default function TelefoneDetalhe() {
         <>
         <Text variant="titleLarge">{telefone.name}</Text>
         <Text>ID: {telefone.id}</Text>
-        <Text>Cor: {telefone.data?.color}</Text>
-        <Text>Capacidade: {telefone.data?.Capacity}</Text>
-        <Text>Preço: {telefone.data?.Price}</Text>
-        <Text>Geração: {telefone.data?.Generation}</Text>
-        <Text>Ano: {telefone.data?.year}</Text>
+        <Text>Cor: {telefone.data.color}</Text>
+        <Text>Capacidade: {telefone.data.capacity}</Text>
+        <Text>Preço: {telefone.data.price}</Text>
+        <Text>Geração: {telefone.data.generation}</Text>
+        <Text>Ano: {telefone.data.year}</Text>
+        <Text> Descrição: {telefone.data.Description}</Text>
         </>
       ) : (<Text>O telefone não foi encontrado na api.</Text>)}
     </View>
